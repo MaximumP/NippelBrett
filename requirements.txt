@@ -1,0 +1,7 @@
+pigpio==1.78
+psutil==5.9.8
+pyudev==0.24.1
+python-vlc==3.0.20123
+pulsectl==23.5.2
+pyaudio==0.2.14
+RPi.GPIO==0.7.1

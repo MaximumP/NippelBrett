@@ -1,53 +1,24 @@
-import os
-import shutil
 import signal
 import sys
 from threading import Thread
 
 import RPi.GPIO as GPIO
-import psutil
-import pyudev
 from pyaudio import PyAudio, paContinue
 import wave
 import glob
 import pulsectl
 import time
+import vlc
 
-from pyudev import MonitorObserver, Device
 
 BUTTONS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 file_dir = "/home/max/Music/NippelBoard/"
 sound_files = glob.glob('*.wav', root_dir=file_dir)
 audio = PyAudio()
 stream = None
-wav_file = None
+wav_file = None | wave.Wave_read
 print(sound_files)
 pulse = pulsectl.Pulse("NippelBoard")
-
-
-def print_device_event(action, device: Device):
-    if action == "change":
-        partitions = psutil.disk_partitions()
-        block_device = device.device_path.rsplit("/", 1)[-1]
-        for p in partitions:
-            if p.device.rsplit("/", 1)[-1] == block_device:
-                new_files_dir = f"{p.mountpoint}/NippelBrett"
-                new_files = glob.glob('*.wav', root_dir=new_files_dir)
-                if len(new_files) > 1:
-                    for file in os.listdir(file_dir):
-                        file_path = os.path.join(file_dir, file)
-                        if os.path.isfile(file_path):
-                            os.remove(file_path)
-                    for file in new_files:
-                        file_path = os.path.join(new_files_dir, file)
-                        shutil.copy(file_path, os.path.join(file_dir, file))
-
-
-context = pyudev.Context()
-monitor = pyudev.Monitor.from_netlink(context)
-monitor.filter_by(subsystem='block')
-observer = MonitorObserver(monitor, print_device_event, name='monitor-observer')
-observer.start()
 
 
 def signal_handler(sig, frame):
