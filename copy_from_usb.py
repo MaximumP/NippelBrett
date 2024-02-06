@@ -1,5 +1,6 @@
 import argparse
 import glob
+import logging
 import os
 import shutil
 import signal
@@ -7,6 +8,12 @@ import signal
 import psutil
 import pyudev
 from pyudev import MonitorObserver, Device
+from cysystemd.journal import JournaldLogHandler
+
+
+logger = logging.getLogger("nippelbrett")
+logger.addHandler(JournaldLogHandler())
+logger.setLevel(logging.DEBUG)
 
 
 parser = argparse.ArgumentParser(description="Copies files from an usb block device to a target directory")
@@ -19,8 +26,6 @@ args = parser.parse_args()
 TARGET_DIRECTORY = args.target_dir
 SOURCE_DIRECTORY = args.source_dir
 FILTER = args.filter
-
-observer: MonitorObserver | None = None
 
 
 def get_mount_point(device: Device) -> str:
@@ -36,6 +41,7 @@ def get_mount_point(device: Device) -> str:
 def delete_files():
     for file in os.listdir(TARGET_DIRECTORY):
         file_path = os.path.join(TARGET_DIRECTORY, file)
+        logger.debug(f"Delete file: {file_path}")
         if os.path.isfile(file_path):
             os.remove(file_path)
 
@@ -43,11 +49,14 @@ def delete_files():
 def copy_files(files: list, directory: str):
     for file in files:
         file_path = os.path.join(directory, file)
+        logger.debug(f"Copy file: {file_path}")
         shutil.copy(file_path, os.path.join(TARGET_DIRECTORY, file))
 
 
 def on_udev_action(action, device: Device):
+    logger.debug("Detected udev action")
     if action == "change":
+        logger.debug("Detected udev change action")
         mount_point = get_mount_point(device)
         source_directory = f"{mount_point}/{SOURCE_DIRECTORY}"
         new_files = glob.glob(FILTER, root_dir=source_directory)
@@ -57,24 +66,26 @@ def on_udev_action(action, device: Device):
 
 
 def signal_handler(sig, frame):
-    print("stop observer")
+    logger.debug("stopping observer")
     if observer:
         observer.stop()
-    print("stopped observer, exit")
+    logger.debug("observer stopped")
     exit(0)
 
 
-def main():
-    global observer
-    context = pyudev.Context()
-    monitor = pyudev.Monitor.from_netlink(context)
-    monitor.filter_by(subsystem='block')
-    observer = MonitorObserver(monitor, on_udev_action)
-    observer.start()
-    print("started observer")
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.pause()
+def create_dir():
+    if os.path.isfile(TARGET_DIRECTORY):
+        os.remove(TARGET_DIRECTORY)
+    if not os.path.isdir(TARGET_DIRECTORY):
+        os.mkdir(TARGET_DIRECTORY)
 
 
-if __name__ == "__main__":
-    main()
+create_dir()
+context = pyudev.Context()
+monitor = pyudev.Monitor.from_netlink(context)
+monitor.filter_by(subsystem='block')
+observer = MonitorObserver(monitor, on_udev_action)
+observer.start()
+logger.info("Start observer")
+signal.signal(signal.SIGINT, signal_handler)
+signal.pause()
