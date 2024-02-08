@@ -1,5 +1,5 @@
 [Unit]
-Description=Listen to udev block change events and copies files from the block device to the internal file system
+Description=Detects gpio inputs and plays sound files from the users ~/Music/NippelBrett/ directory
 After=multi-user.target
 
 [Service]
@@ -8,7 +8,7 @@ Type=simple
 Restart=always
 WorkingDirectory=/home/max/NippelBrett
 ExecStartPre=/home/max/NippelBrett/install-requirements.sh
-ExecStart=/home/max/NippelBrett/venv/bin/python3 copy_from_usb.py
+ExecStart=/home/max/NippelBrett/venv/bin/python3 nippel_brett.py
 
 [Install]
 WantedBy=multi-user.target

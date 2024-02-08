@@ -7,3 +7,4 @@ pyaudio==0.2.14
 RPi.GPIO==0.7.1
 systemd==0.17.1
 cysystemd==1.6.0
+gpiozero==2.0

@@ -11,7 +11,7 @@ from pyudev import MonitorObserver, Device
 from cysystemd.journal import JournaldLogHandler
 
 
-logger = logging.getLogger("nippelbrett")
+logger = logging.getLogger("copy_files")
 logger.addHandler(JournaldLogHandler())
 logger.setLevel(logging.DEBUG)
 
