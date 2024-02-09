@@ -1,11 +1,19 @@
 #!/usr/bin/bash
-sudo apt install build-essential libsystemd-dev vlc -y
-# todo get the working directory into the .service file
-cp ./copy-from-usb.service ~/.config/systemd/user
-cp ./nippel-brett ~/.config/systemd/user
-systemctl --user daemon-reload
-systemctl --user enable copy-from-usb
-systemctl --user enable nippel-brett
+sudo apt install build-essential libsystemd-dev vlc git curl -y
 
-systemctl --user start copy-from-usb
-systemctl --user start nippel-brett
+#curl -sSL https://raw.githubusercontent.com/tests-always-included/mo/master/mo -o mo
+#chmod +x mo
+#mkdir ~/.local/bin
+#mv mo ~/.local/bin
+#
+#mo
+
+# todo get the working directory into the .service file
+sudo cp ./services/copy-from-usb.service /etc/systemd/system/
+sudo cp ./services/nippel-brett.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable copy-from-usb
+sudo systemctl enable nippel-brett
+
+sudo systemctl start copy-from-usb
+sudo systemctl start nippel-brett

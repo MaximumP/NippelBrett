@@ -3,12 +3,11 @@ Description=Detects gpio inputs and plays sound files from the users ~/Music/Nip
 After=multi-user.target
 
 [Service]
-#User=max
 Type=simple
 Restart=always
-WorkingDirectory=/home/max/NippelBrett
-ExecStartPre=/home/max/NippelBrett/install-requirements.sh
-ExecStart=/home/max/NippelBrett/venv/bin/python3 nippel_brett.py
+WorkingDirectory=/home/nippelbrett/NippelBrett
+ExecStartPre=/home/nippelbrett/NippelBrett/install-requirements.sh
+ExecStart=/home/nippelbrett/NippelBrett/venv/bin/python3 src/nippel_brett.py
 
 [Install]
 WantedBy=multi-user.target

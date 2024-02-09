@@ -3,12 +3,11 @@ Description=Listen to udev block change events and copies files from the block d
 After=multi-user.target
 
 [Service]
-#User=max
 Type=simple
 Restart=always
-WorkingDirectory=/home/max/NippelBrett
-ExecStartPre=/home/max/NippelBrett/install-requirements.sh
-ExecStart=/home/max/NippelBrett/venv/bin/python3 copy_from_usb.py
+WorkingDirectory=/home/nippelbrett/NippelBrett/
+ExecStartPre=/home/nippelbrett/NippelBrett/install-requirements.sh
+ExecStart=/home/nippelbrett/NippelBrett/venv/bin/python3 src/copy_from_usb.py
 
 [Install]
 WantedBy=multi-user.target
