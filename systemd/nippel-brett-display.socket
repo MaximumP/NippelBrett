@@ -1,0 +1,7 @@
+[Unit]
+Description=Service to display Nippel Brett related data on a LCD
+AssertPathExists=/var/run
+Requires=nippel-brett-display.service
+
+[Socket]
+ListenDatagram=/var/run/nippel-display.socket

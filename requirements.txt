@@ -7,3 +7,4 @@ RPi.GPIO==0.7.1
 systemd==0.17.1
 cysystemd==1.6.0
 gpiozero==2.0
+smbus2==0.4.3

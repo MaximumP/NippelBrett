@@ -10,7 +10,7 @@ import pulsectl
 from vlc import MediaPlayer
 from cysystemd.journal import JournaldLogHandler
 
-logger = logging.getLogger("copy_files")
+logger = logging.getLogger("nippel_brett")
 logger.addHandler(JournaldLogHandler())
 logger.setLevel(logging.DEBUG)
 

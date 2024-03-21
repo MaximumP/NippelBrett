@@ -1,0 +1,8 @@
+[Unit]
+Description=Service to display Nippel Brett related data on a LCD
+PartOf=nippel-brett-display.socket
+
+[Service]
+Type=notify
+WorkingDirectory=/home/nippelbrett/NippelBrett
+ExecStart=/home/nippelbrett/NippelBrett/venv/bin/python3 src/nippel_display.py

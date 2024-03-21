@@ -1,0 +1,13 @@
+[Unit]
+Description=Detects gpio inputs and plays sound files from the users ~/Music/NippelBrett/ directory
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/home/nippelbrett/NippelBrett
+ExecStartPre=/home/nippelbrett/NippelBrett/install-requirements.sh
+ExecStart=/home/nippelbrett/NippelBrett/venv/bin/python3 src/nippel_brett.py
+
+[Install]
+WantedBy=multi-user.target
