@@ -5,9 +5,10 @@ After=multi-user.target
 [Service]
 Type=simple
 Restart=always
-WorkingDirectory=/home/nippelbrett/NippelBrett/
-ExecStartPre=/home/nippelbrett/NippelBrett/install-requirements.sh
-ExecStart=/home/nippelbrett/NippelBrett/venv/bin/python3 src/copy_from_usb.py
+WorkingDirectory={{HOME}}/NippelBrett/
+TimeoutStartSec=900
+ExecStartPre={{HOME}}/NippelBrett/install-requirements.sh
+ExecStart={{HOME}}/NippelBrett/venv/bin/python3 src/copy_from_usb.py
 
 [Install]
 WantedBy=multi-user.target

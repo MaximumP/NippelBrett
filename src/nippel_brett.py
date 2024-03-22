@@ -5,6 +5,7 @@ import signal
 import sys
 from threading import Thread, Event
 import RPi.GPIO as GPIO
+import pigpio
 import glob
 import pulsectl
 from vlc import MediaPlayer
@@ -12,6 +13,7 @@ from cysystemd.journal import JournaldLogHandler
 
 logger = logging.getLogger("nippel_brett")
 logger.addHandler(JournaldLogHandler())
+logger.addHandler(logging.StreamHandler(sys.stdout))
 logger.setLevel(logging.DEBUG)
 
 
@@ -21,7 +23,7 @@ parser.add_argument("-f", "--filter", type=str, required=False, default="*.wav")
 args = parser.parse_args()
 
 
-BUTTONS = [3, 17, 22, 9, 5, 13, 2, 4, 27, 10, 11, 6]
+BUTTONS = [26, 17, 22, 9, 5, 13, 19, 4, 27, 10, 11, 6]
 FILE_DIR = args.sound_files_dir
 FILTER = args.filter
 pulse = pulsectl.Pulse("NippelBoard")
@@ -37,8 +39,8 @@ class NippelBrett:
     def __del__(self):
         self.stop_event.set()
 
-    def button_pressed(self, pin):
-        logger.debug(f"Detected button press for button at {pin}")
+    def button_pressed(self, pin, level, tick):
+        logger.debug(f"Detected button press for button at {pin}, level {level}, tick {tick}")
         if self.thread and self.thread.is_alive():
             logger.debug("Thread is still alive. Set stop event and wait for it to die")
             self.stop_event.set()
@@ -73,19 +75,27 @@ class NippelBrett:
             return
 
 
+pi = pigpio.pi()
+
 
 def signal_handler(sig, frame):
     logger.debug(f"Got signal: {sig}, frame: {frame}. Set stop event for thread")
-    GPIO.cleanup()
+    pi.stop()
+    #GPIO.cleanup()
     sys.exit(0)
 
 
 nippel_brett = NippelBrett()
 button_pressed_ref = nippel_brett.button_pressed
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(BUTTONS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#  GPIO.setmode(GPIO.BCM)
+#  GPIO.setup(14, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 for button in BUTTONS:
-    GPIO.add_event_detect(button, GPIO.RISING, callback=button_pressed_ref, bouncetime=500)
+    logger.info(f"add event detect to pin: {button}")
+    pi.set_mode(button, pigpio.INPUT)
+    pi.set_pull_up_down(button, pigpio.PUD_UP)
+    pi.set_glitch_filter(button, 100)
+    pi.callback(5, pigpio.RISING_EDGE, button_pressed_ref)
+    #  GPIO.add_event_detect(button, GPIO.RISING, callback=button_pressed_ref, bouncetime=500)
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.pause()

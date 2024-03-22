@@ -5,3 +5,6 @@ Requires=nippel-brett-display.service
 
 [Socket]
 ListenDatagram=/var/run/nippel-display.socket
+
+[Install]
+WantedBy=multi-user.target
