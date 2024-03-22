@@ -9,14 +9,15 @@ fi
 
 echo "Compile mustache templates to /etc/systemd/service directory"
 ./mo ./systemd/copy-from-usb.service.mo | sudo tee /etc/systemd/system/copy-from-usb.service > /dev/null
-./mo ./systemd/nippel-brett.service.mo | sudo tee /etc/systemd/system/nippel-brett.service > /dev/null
+./mo ./systemd/nippel-brett.service.mo > ~/.config/systemd/user/nippel-brett.service
 ./mo ./systemd/nippel-brett-display.service.mo | sudo tee /etc/systemd/system/nippel-brett-display.service > /dev/null
 sudo cp ./systemd/nippel-brett-display.socket /etc/systemd/system/
+
 
 echo "Reload systemd daemon"
 sudo systemctl daemon-reload
 sudo systemctl enable copy-from-usb
-sudo systemctl enable nippel-brett
+systemctl --user enable nippel-brett
 sudo systemctl enable nippel-brett-display.socket
 
 sudo systemctl restart copy-from-usb

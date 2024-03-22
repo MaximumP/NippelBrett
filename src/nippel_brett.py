@@ -67,7 +67,7 @@ class NippelBrett:
             self.player.play()
             self.stop_event.wait(.2)
             logger.debug(f"Is set: {self.stop_event.is_set()}, is playing: {self.player.is_playing()}")
-            while not self.stop_event.is_set() and self.player.is_playing():
+            while not self.stop_event.is_set() and (self.player is not None and self.player.is_playing()):
                 self.stop_event.wait(.5)
             self.player.stop()
         except IndexError:
@@ -94,7 +94,7 @@ for button in BUTTONS:
     pi.set_mode(button, pigpio.INPUT)
     pi.set_pull_up_down(button, pigpio.PUD_UP)
     pi.set_glitch_filter(button, 100)
-    pi.callback(5, pigpio.RISING_EDGE, button_pressed_ref)
+    pi.callback(button, pigpio.RISING_EDGE, button_pressed_ref)
     #  GPIO.add_event_detect(button, GPIO.RISING, callback=button_pressed_ref, bouncetime=500)
 
 signal.signal(signal.SIGINT, signal_handler)
