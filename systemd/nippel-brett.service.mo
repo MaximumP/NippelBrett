@@ -1,5 +1,6 @@
 [Unit]
 Description=Detects gpio inputs and plays sound files from the users ~/Music/NippelBrett/ directory
+After=pigpiod.service
 
 [Service]
 Type=simple

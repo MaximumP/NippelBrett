@@ -9,4 +9,4 @@ Follow the installation guide of [Raspberry Pi Audio Receiver](https://github.co
 and run the install.sh script
 
 
-TODO: pulsaudio server pigpio deamon
+TODO: pulsaudio 

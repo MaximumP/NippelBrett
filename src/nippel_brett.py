@@ -4,7 +4,6 @@ import os
 import signal
 import sys
 from threading import Thread, Event
-import RPi.GPIO as GPIO
 import pigpio
 import glob
 import pulsectl
@@ -62,14 +61,15 @@ class NippelBrett:
             logger.debug(f"Playing file: {files[index]} at index: {index}")
             if self.player is not None:
                 self.player.stop()
-                self.player = None
             self.player = MediaPlayer(os.path.join(FILE_DIR, files[index]))
+
             self.player.play()
             self.stop_event.wait(.2)
             logger.debug(f"Is set: {self.stop_event.is_set()}, is playing: {self.player.is_playing()}")
             while not self.stop_event.is_set() and (self.player is not None and self.player.is_playing()):
                 self.stop_event.wait(.5)
             self.player.stop()
+            self.player = None
         except IndexError:
             logger.info(f"No file for button: {pin}")
             return
@@ -81,21 +81,17 @@ pi = pigpio.pi()
 def signal_handler(sig, frame):
     logger.debug(f"Got signal: {sig}, frame: {frame}. Set stop event for thread")
     pi.stop()
-    #GPIO.cleanup()
     sys.exit(0)
 
 
 nippel_brett = NippelBrett()
 button_pressed_ref = nippel_brett.button_pressed
-#  GPIO.setmode(GPIO.BCM)
-#  GPIO.setup(14, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 for button in BUTTONS:
     logger.info(f"add event detect to pin: {button}")
-    pi.set_mode(button, pigpio.INPUT)
     pi.set_pull_up_down(button, pigpio.PUD_UP)
+    pi.set_mode(button, pigpio.INPUT)
     pi.set_glitch_filter(button, 100)
     pi.callback(button, pigpio.RISING_EDGE, button_pressed_ref)
-    #  GPIO.add_event_detect(button, GPIO.RISING, callback=button_pressed_ref, bouncetime=500)
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.pause()

@@ -15,3 +15,7 @@ pi.callback(5, pigpio.RISING_EDGE, lambda x, y, z: print(f"Pin: {x}, y: {y}, z: 
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.pause()
+
+for i in alsaaudio.card_indexes():
+    (name, longname) = alsaaudio.card_name(i)
+    print("  %d: %s (%s)" % (i, name, longname))

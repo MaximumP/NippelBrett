@@ -20,6 +20,7 @@ sudo systemctl enable copy-from-usb
 systemctl --user enable nippel-brett
 sudo systemctl enable nippel-brett-display.socket
 
+echo "Restart services"
 sudo systemctl restart copy-from-usb
-sudo systemctl restart nippel-brett
+systemctl --user restart nippel-brett
 sudo systemctl restart nippel-brett-display.service
