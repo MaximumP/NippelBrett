@@ -8,5 +8,14 @@ The Display Service is using the code from https://gist.github.com/DenisFromHR/c
 Follow the installation guide of [Raspberry Pi Audio Receiver](https://github.com/nicokaiser/rpi-audio-receiver)
 and run the install.sh script
 
+```shell
+wget https://github.com/joan2937/pigpio/archive/master.zip
+unzip master.zip
+cd pigpio-master
+make
+sudo make install
+```
+
+Install pigpio
 
 TODO: pulsaudio 

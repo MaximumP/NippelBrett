@@ -19,7 +19,7 @@ logger.setLevel(logging.DEBUG)
 parser = argparse.ArgumentParser(description="Copies files from an usb block device to a target directory")
 parser.add_argument("-t", "--target-dir", type=str, required=False, default="/home/nippelbrett/Music/NippelBrett")
 parser.add_argument("-s", "--source-dir", type=str, required=False, default="NippelBrett")
-parser.add_argument("-f", "--filter", type=str, required=False, default="*.wav")
+parser.add_argument("-f", "--filter", type=str, required=False, default="*")
 
 
 args = parser.parse_args()

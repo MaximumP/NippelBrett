@@ -1,5 +1,13 @@
 #!/usr/bin/bash
-sudo apt install build-essential libsystemd-dev vlc git curl gcc python3-dev pulseaudio pulseaudio-utils -y
+sudo apt install build-essential libsystemd-dev vlc git curl gcc python3-dev pulseaudio pulseaudio-utils pulseaudio-module-bluetooth -y
+
+# todo
+#wget https://github.com/joan2937/pigpio/archive/master.zip ../
+#unzip ../master.zip
+#cd ../pigpio-master
+#make
+#sudo make install
+#cd --
 
 if [ ! -f ./mo ]; then
   echo "Installing mustache template engine"

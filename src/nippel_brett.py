@@ -18,7 +18,7 @@ logger.setLevel(logging.DEBUG)
 
 parser = argparse.ArgumentParser(description="Detects button presses and play sound files")
 parser.add_argument("-d", "--sound-files-dir", type=str, required=False, default="/home/nippelbrett/Music/NippelBrett")
-parser.add_argument("-f", "--filter", type=str, required=False, default="*.wav")
+parser.add_argument("-f", "--filter", type=str, required=False, default="*")
 args = parser.parse_args()
 
 
@@ -63,16 +63,24 @@ class NippelBrett:
                 self.player.stop()
             self.player = MediaPlayer(os.path.join(FILE_DIR, files[index]))
 
+            self.toggle_mute()
             self.player.play()
             self.stop_event.wait(.2)
             logger.debug(f"Is set: {self.stop_event.is_set()}, is playing: {self.player.is_playing()}")
             while not self.stop_event.is_set() and (self.player is not None and self.player.is_playing()):
                 self.stop_event.wait(.5)
             self.player.stop()
+            self.toggle_mute(False)
             self.player = None
         except IndexError:
             logger.info(f"No file for button: {pin}")
             return
+
+    @staticmethod
+    def toggle_mute(mute: bool = True):
+        for sink in pulse.sink_input_list():
+            if sink.name != "audio steam":
+                pulse.mute(sink, mute)
 
 
 pi = pigpio.pi()
