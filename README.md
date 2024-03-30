@@ -14,8 +14,7 @@ unzip master.zip
 cd pigpio-master
 make
 sudo make install
+sudo service enable pigpio.service
 ```
 
 Install pigpio
-
-TODO: pulsaudio 

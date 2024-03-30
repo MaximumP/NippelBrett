@@ -50,13 +50,6 @@ def delete_files():
             os.remove(file_path)
 
 
-def copy_files(files: list, directory: str):
-    for file in files:
-        file_path = os.path.join(directory, file)
-        logger.info(f"Copy file: {file_path}")
-        shutil.copy(file_path, os.path.join(TARGET_DIRECTORY, file))
-
-
 def on_udev_action(action, device: Device):
     logger.info(f"Detected udev action: {action}")
     logger.debug(f"{device.device_path}")
@@ -68,8 +61,8 @@ def on_udev_action(action, device: Device):
         source_directory = f"{mount_point}/{SOURCE_DIRECTORY}"
         new_files = glob.glob(FILTER, root_dir=source_directory)
         if len(new_files):
-            delete_files()
-            copy_files(new_files, source_directory)
+            shutil.rmtree(TARGET_DIRECTORY, ignore_errors=True)
+            shutil.copytree(source_directory, TARGET_DIRECTORY)
 
 
 def signal_handler(sig, frame):
