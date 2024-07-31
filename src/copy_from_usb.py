@@ -19,7 +19,7 @@ logger.setLevel(logging.DEBUG)
 parser = argparse.ArgumentParser(description="Copies files from an usb block device to a target directory")
 parser.add_argument("-t", "--target-dir", type=str, required=False, default="/home/nippelbrett/Music/NippelBrett")
 parser.add_argument("-s", "--source-dir", type=str, required=False, default="NippelBrett")
-parser.add_argument("-f", "--filter", type=str, required=False, default="*.wav")
+parser.add_argument("-f", "--filter", type=str, required=False, default="*")
 
 
 args = parser.parse_args()
@@ -66,7 +66,9 @@ def on_udev_action(action, device: Device):
         if mount_point is None:
             return
         source_directory = f"{mount_point}/{SOURCE_DIRECTORY}"
+        logger.info(f"Read files from {source_directory}")
         new_files = glob.glob(FILTER, root_dir=source_directory)
+        logger.info(f"Copy ")
         if len(new_files):
             delete_files()
             copy_files(new_files, source_directory)
